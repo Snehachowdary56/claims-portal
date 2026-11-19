@@ -1,0 +1,7 @@
+[
+  { "id": "CL-2026-0001", "policyNumber": "HB-1001", "type": "Prescription", "incidentDate": "2026-09-12", "amount": 84.5, "status": "Paid", "description": "Monthly prescription" },
+  { "id": "CL-2026-0002", "policyNumber": "HB-1002", "type": "Cleaning", "incidentDate": "2026-10-03", "amount": 180, "status": "Paid", "description": "Routine cleaning" },
+  { "id": "CL-2026-0003", "policyNumber": "HB-1001", "type": "Physiotherapy", "incidentDate": "2026-10-21", "amount": 95, "status": "In review", "description": "Physio session" },
+  { "id": "CL-2026-0004", "policyNumber": "HB-1003", "type": "Trip cancellation", "incidentDate": "2026-11-02", "amount": 640, "status": "More info needed", "description": "Cancelled flight" },
+  { "id": "CL-2026-0005", "policyNumber": "HB-1001", "type": "Vision", "incidentDate": "2026-11-09", "amount": 220, "status": "Submitted", "description": "Prescription glasses" }
+]

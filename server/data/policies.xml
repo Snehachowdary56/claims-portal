@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Fictional data for the Harbour Insurance prototype -->
+<policies>
+  <policy number="HB-1001" type="health">
+    <holder>Alex Morgan</holder>
+    <coverageLimit currency="CAD">5000</coverageLimit>
+    <claimTypes><type>Prescription</type><type>Physiotherapy</type><type>Vision</type></claimTypes>
+  </policy>
+  <policy number="HB-1002" type="dental">
+    <holder>Alex Morgan</holder>
+    <coverageLimit currency="CAD">1500</coverageLimit>
+    <claimTypes><type>Cleaning</type><type>Filling</type></claimTypes>
+  </policy>
+  <policy number="HB-1003" type="travel">
+    <holder>Alex Morgan</holder>
+    <coverageLimit currency="CAD">10000</coverageLimit>
+    <claimTypes><type>Emergency medical</type><type>Trip cancellation</type></claimTypes>
+  </policy>
+</policies>

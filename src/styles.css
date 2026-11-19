@@ -1,0 +1,30 @@
+/* Bootstrap themed with the Harbour design tokens (tokens.css) */
+:root {
+  --bs-primary: var(--ds-color-brand);
+  --bs-primary-rgb: 31, 78, 140;
+  --bs-link-color: var(--ds-color-brand);
+  --bs-body-color: var(--ds-color-text);
+  --bs-body-font-family: var(--ds-font-family);
+  --bs-border-radius: var(--ds-radius-md);
+}
+.btn { min-height: var(--ds-target-min); }
+.btn-primary {
+  --bs-btn-bg: var(--ds-color-brand);
+  --bs-btn-border-color: var(--ds-color-brand);
+  --bs-btn-hover-bg: var(--ds-color-brand-strong);
+  --bs-btn-hover-border-color: var(--ds-color-brand-strong);
+  --bs-btn-active-bg: var(--ds-color-brand-strong);
+}
+.form-control, .form-select { min-height: var(--ds-target-min); border-color: var(--ds-color-border); }
+.form-control:focus, .form-select:focus, .btn:focus-visible, .nav-link:focus-visible, a:focus-visible {
+  outline: 3px solid var(--ds-color-focus);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+.invalid-feedback { color: var(--ds-color-danger); }
+.app-header { background: var(--ds-color-brand); color: var(--ds-color-on-brand); }
+.nav-tabs .nav-link { color: var(--ds-color-brand); }
+.nav-tabs .nav-link.active { color: var(--ds-color-text); font-weight: var(--ds-font-weight-bold); }
+.skip-link { position: absolute; left: -9999px; }
+.skip-link:focus { left: 1rem; top: 1rem; z-index: 10; background: #fff; padding: .5rem 1rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }

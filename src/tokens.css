@@ -1,0 +1,40 @@
+/* Design tokens copied from the Harbour design system (github.com/Snehachowdary56/accessible-design-system). */
+:root {
+  --ds-color-brand: #1F4E8C;
+  --ds-color-brand-strong: #173B6A;
+  --ds-color-on-brand: #FFFFFF;
+  --ds-color-brand-subtle: #EEF4FC;
+  --ds-color-text: #1A1F2B;
+  --ds-color-text-muted: #4A5468;
+  --ds-color-surface: #FFFFFF;
+  --ds-color-surface-alt: #F4F6FA;
+  --ds-color-border: #7C8597;
+  --ds-color-focus: #2E6BD1;
+  --ds-color-danger: #B42318;
+  --ds-color-danger-subtle: #FEF3F2;
+  --ds-color-success: #067647;
+  --ds-color-success-subtle: #ECFDF3;
+  --ds-color-warning: #7A4B00;
+  --ds-color-warning-subtle: #FFFAEB;
+  --ds-color-disabled-text: #5B6474;
+  --ds-color-disabled-bg: #E4E7EC;
+  --ds-space-1: 4px;
+  --ds-space-2: 8px;
+  --ds-space-3: 12px;
+  --ds-space-4: 16px;
+  --ds-space-5: 24px;
+  --ds-space-6: 32px;
+  --ds-space-7: 48px;
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-radius-pill: 999px;
+  --ds-font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --ds-font-size-sm: 0.875rem;
+  --ds-font-size-md: 1rem;
+  --ds-font-size-lg: 1.25rem;
+  --ds-font-size-xl: 1.75rem;
+  --ds-font-weight-regular: 400;
+  --ds-font-weight-bold: 600;
+  --ds-target-min: 44px;
+}
