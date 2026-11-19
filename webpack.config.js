@@ -1,18 +1,23 @@
 import CssMinimizerPlugin from "css-minimizer-webpack-plugin";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import MiniCssExtractPlugin from "mini-css-extract-plugin";
+import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
+import webpack from "webpack";
 import { fileURLToPath } from "node:url";
 import { createApp } from "./server/server.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
 
-export default (_env, argv) => {
+export default (env = {}, argv) => {
   const prod = argv.mode === "production";
+  const demo = Boolean(env.demo);  // `npm run build:demo`: static build for GitHub Pages, no server
+  const data = (f) => readFileSync(resolve(here, "server", "data", f), "utf8");
   return {
     entry: "./src/index.js",
     output: {
-      path: resolve(here, "dist"),
+      path: resolve(here, demo ? "dist-demo" : "dist"),
+      publicPath: "",
       filename: prod ? "js/[name].[contenthash:8].js" : "js/[name].js",
       chunkFilename: prod ? "js/[name].[contenthash:8].js" : "js/[name].js",
       clean: true,
@@ -35,6 +40,11 @@ export default (_env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({ template: "./src/index.html" }),
+      new webpack.DefinePlugin({
+        __DEMO__: JSON.stringify(demo),
+        __DEMO_POLICIES_XML__: demo ? JSON.stringify(data("policies.xml")) : "null",
+        __DEMO_CLAIMS__: demo ? data("claims.json") : "null",
+      }),
       ...(prod ? [new MiniCssExtractPlugin({ filename: "css/[name].[contenthash:8].css" })] : []),
     ],
     optimization: {

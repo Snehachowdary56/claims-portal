@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
-import { api } from "./api.js";
+import { api, isDemo } from "./api.js";
 import ClaimsTable from "./components/ClaimsTable.jsx";
 
 // The form is only downloaded when it is opened (Webpack code splitting keeps the first load small).
@@ -42,7 +42,10 @@ export default function App() {
     <>
       <a href="#main" className="skip-link">Skip to content</a>
       <header className="app-header py-3 mb-4">
-        <div className="container"><h1 className="h3 mb-0">Harbour Insurance claims</h1></div>
+        <div className="container">
+          <h1 className="h3 mb-0">Harbour Insurance claims</h1>
+          {isDemo && <p className="small mb-0 mt-1">Demo with fictional data. New claims are saved only in this browser.</p>}
+        </div>
       </header>
       <main id="main" className="container pb-5">
         <ul className="nav nav-tabs mb-4">
