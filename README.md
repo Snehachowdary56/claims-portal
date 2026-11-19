@@ -8,6 +8,10 @@ accessible error messages.
 
 > Harbour Insurance is fictional. All data is made up.
 
+**Live demo:** https://snehachowdary56.github.io/claims-portal/ (static build: new claims are saved only in your browser)
+
+**Lighthouse** (desktop, median of 3 runs in CI): Performance 100 · Accessibility 100 · Best Practices 96 · SEO 90
+
 ## What it shows
 
 | Area | How |
@@ -20,7 +24,8 @@ accessible error messages.
 | XML/JSON | Policies parsed from XML with `DOMParser` (`src/xml.js`); claims sent and received as JSON |
 | One set of rules | `src/validation.js` is used by both the form and the server, so they can never disagree |
 | Accessibility | Labels, error summary that takes focus, `aria-invalid` and `aria-describedby`, 44px targets, visible focus, skip link, reduced motion |
-| Quality | 23 Jest tests (React Testing Library, supertest, jest-axe), a Playwright browser test, ESLint, GitHub Actions CI |
+| Quality | 25 Jest tests (React Testing Library, supertest, jest-axe), Playwright browser tests of both builds, Lighthouse checks, ESLint, GitHub Actions CI |
+| Demo build | `npm run build:demo` bundles the same XML/JSON data into a static site for GitHub Pages (no server); claims are validated with the same rules and kept in `localStorage` |
 
 ## Run it (Windows Command Prompt)
 
@@ -42,7 +47,7 @@ npm run serve
 
 Open http://localhost:3001.
 
-Tests: `npm test` (23 tests), `npm run lint`, `npm run e2e` (browser test, needs `npx playwright install chromium` once).
+Tests: `npm test` (25 tests), `npm run lint`, `npm run e2e` (browser test, needs `npx playwright install chromium` once).
 
 ## API
 
