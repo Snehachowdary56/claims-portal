@@ -67,3 +67,7 @@ tests/          Jest tests (XML parsing, validation, API, UI flows, accessibilit
 e2e/            Playwright browser test
 tsconfig.json, webpack.config.js, babel.config.cjs, jest.config.cjs, eslint.config.js
 ```
+
+## Bug write-ups
+
+See [BUGS.md](BUGS.md): what caused each bug, the fix, and the test that now guards it.
