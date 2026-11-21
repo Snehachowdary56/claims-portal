@@ -1,8 +1,13 @@
 import { useMemo, useState } from "react";
-import { money, STATUS_STYLE } from "../format.js";
+import { money, STATUS_STYLE } from "../format.ts";
+import type { Claim } from "../types.ts";
 
-export default function ClaimsTable({ claims }) {
-  const [status, setStatus] = useState("All");
+interface Props {
+  claims: Claim[];
+}
+
+export default function ClaimsTable({ claims }: Props) {
+  const [status, setStatus] = useState<string>("All");
   const statuses = useMemo(() => ["All", ...new Set(claims.map((c) => c.status))], [claims]);
   const shown = status === "All" ? claims : claims.filter((c) => c.status === status);
   const total = shown.reduce((sum, c) => sum + c.amount, 0);

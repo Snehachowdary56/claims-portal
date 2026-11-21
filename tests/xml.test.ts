@@ -1,5 +1,5 @@
 import { readFileSync } from "node:fs";
-import { parsePoliciesXml } from "../src/xml.js";
+import { parsePoliciesXml } from "../src/xml.ts";
 
 const xml = readFileSync(new URL("../server/data/policies.xml", import.meta.url), "utf8");
 

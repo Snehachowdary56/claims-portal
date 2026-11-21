@@ -1,4 +1,4 @@
-import { validateClaim } from "../src/validation.js";
+import { validateClaim } from "../src/validation.ts";
 
 const policies = [{ number: "HB-1", coverageLimit: 1500, claimTypes: ["Cleaning", "Filling"] }];
 const today = new Date(2026, 10, 18);

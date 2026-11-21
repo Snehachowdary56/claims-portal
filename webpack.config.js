@@ -5,16 +5,20 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import webpack from "webpack";
 import { fileURLToPath } from "node:url";
-import { createApp } from "./server/server.js";
+import { register } from "tsx/esm/api";
+
+// The dev server runs the Express API, which is TypeScript: let Node load .ts files here.
+register();
 
 const here = dirname(fileURLToPath(import.meta.url));
 
-export default (env = {}, argv) => {
+export default async (env = {}, argv) => {
+  const { createApp } = await import("./server/server.ts");
   const prod = argv.mode === "production";
   const demo = Boolean(env.demo);  // `npm run build:demo`: static build for GitHub Pages, no server
   const data = (f) => readFileSync(resolve(here, "server", "data", f), "utf8");
   return {
-    entry: "./src/index.js",
+    entry: "./src/index.tsx",
     output: {
       path: resolve(here, demo ? "dist-demo" : "dist"),
       publicPath: "",
@@ -22,10 +26,10 @@ export default (env = {}, argv) => {
       chunkFilename: prod ? "js/[name].[contenthash:8].js" : "js/[name].js",
       clean: true,
     },
-    resolve: { extensions: [".js", ".jsx"] },
+    resolve: { extensions: [".ts", ".tsx", ".js", ".jsx"] },
     module: {
       rules: [
-        { test: /\.jsx?$/, exclude: /node_modules/, use: "babel-loader" },
+        { test: /\.[jt]sx?$/, exclude: /node_modules/, use: "babel-loader" },
         { test: /\.css$/, use: [prod ? MiniCssExtractPlugin.loader : "style-loader", "css-loader"] },
         {
           test: /\.scss$/,

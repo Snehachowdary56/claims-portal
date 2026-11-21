@@ -8,5 +8,5 @@ export default defineConfig({
   use: { baseURL: demo ? "http://localhost:3002" : "http://localhost:3001", viewport: { width: 1200, height: 800 } },
   webServer: demo
     ? { command: "npx http-server dist-demo -p 3002 -s", port: 3002, reuseExistingServer: false }
-    : { command: "node server/server.js", port: 3001, reuseExistingServer: false },
+    : { command: "npx tsx server/server.ts", port: 3001, reuseExistingServer: false },
 });

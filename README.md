@@ -1,4 +1,4 @@
-# Harbour claims portal (React prototype)
+# Harbour claims portal (React + TypeScript prototype)
 
 [![CI](https://github.com/Snehachowdary56/claims-portal/actions/workflows/ci.yml/badge.svg)](https://github.com/Snehachowdary56/claims-portal/actions/workflows/ci.yml)
 
@@ -16,15 +16,16 @@ accessible error messages.
 
 | Area | How |
 |---|---|
-| Web application | React 18 with ES6+ (modules, async/await, destructuring), JSX |
+| Web application | React 18 with **TypeScript** (strict mode): typed props, state, events and API responses; shared types in `src/types.ts` used by the browser, the Express API and the tests |
+| Type safety | `npm run typecheck` (tsc, strict) runs in CI before tests; Babel strips types for Webpack and Jest |
 | UI framework | Bootstrap 5, themed with the Harbour design tokens (`src/tokens.css`, from the [Harbour design system](https://github.com/Snehachowdary56/accessible-design-system)) |
-| Build | Webpack 5 + Babel: code splitting (the claim form loads only when opened), content-hashed files for caching, CSS minification, source maps |
+| Build | Webpack 5 + Babel (TypeScript preset): code splitting (the claim form loads only when opened), content-hashed files for caching, CSS minification, source maps |
 | Performance | Imports only the Bootstrap parts the app uses: CSS cut from **233 KB to 94 KB (60% smaller)**. A performance budget in `webpack.config.js` fails the build if the first load gets too big. |
-| Client-server | Express API (`server/server.js`): policies as **XML**, claims as **JSON**, claim submission with server-side checks |
-| XML/JSON | Policies parsed from XML with `DOMParser` (`src/xml.js`); claims sent and received as JSON |
-| One set of rules | `src/validation.js` is used by both the form and the server, so they can never disagree |
+| Client-server | Express API in TypeScript (`server/server.ts`, run with `tsx`): policies as **XML**, claims as **JSON**, claim submission with server-side checks |
+| XML/JSON | Policies parsed from XML with `DOMParser` (`src/xml.ts`); claims sent and received as JSON |
+| One set of rules | `src/validation.ts` is used by both the form and the server, so they can never disagree |
 | Accessibility | Labels, error summary that takes focus, `aria-invalid` and `aria-describedby`, 44px targets, visible focus, skip link, reduced motion |
-| Quality | 25 Jest tests (React Testing Library, supertest, jest-axe), Playwright browser tests of both builds, Lighthouse checks, ESLint, GitHub Actions CI |
+| Quality | 27 Jest tests (React Testing Library, supertest, jest-axe), Playwright browser tests of both builds, Lighthouse checks, ESLint with typescript-eslint, GitHub Actions CI |
 | Demo build | `npm run build:demo` bundles the same XML/JSON data into a static site for GitHub Pages (no server); claims are validated with the same rules and kept in `localStorage` |
 
 ## Run it (Windows Command Prompt)
@@ -60,9 +61,9 @@ Tests: `npm test` (25 tests), `npm run lint`, `npm run e2e` (browser test, needs
 ## Layout
 
 ```
-src/            React app: App.jsx, components/, api.js, xml.js, validation.js, bootstrap.scss
-server/         Express API and sample data (policies.xml, claims.json)
+src/            React app (TypeScript): App.tsx, components/, api.ts, types.ts, xml.ts, validation.ts, bootstrap.scss
+server/         Express API (server.ts) and sample data (policies.xml, claims.json)
 tests/          Jest tests (XML parsing, validation, API, UI flows, accessibility)
 e2e/            Playwright browser test
-webpack.config.js, babel.config.cjs, jest.config.cjs, eslint.config.js
+tsconfig.json, webpack.config.js, babel.config.cjs, jest.config.cjs, eslint.config.js
 ```

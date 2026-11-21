@@ -1,6 +1,6 @@
 /** @jest-environment node */
 import request from "supertest";
-import { createApp } from "../server/server.js";
+import { createApp } from "../server/server.ts";
 
 const today = () => new Date(2026, 10, 18);
 

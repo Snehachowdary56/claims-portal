@@ -1,23 +1,32 @@
-import { useRef, useState } from "react";
-import { validateClaim, MAX_DESCRIPTION } from "../validation.js";
+import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { validateClaim, MAX_DESCRIPTION } from "../validation.ts";
+import { ApiError, type ClaimField, type ClaimInput, type FieldErrors, type Policy } from "../types.ts";
 
-const EMPTY = { policyNumber: "", type: "", incidentDate: "", amount: "", description: "" };
-const LABELS = { policyNumber: "Policy", type: "What is the claim for?", incidentDate: "Date of the expense", amount: "Amount (CAD)", description: "Description (optional)" };
+type FormValues = Required<ClaimInput>;
 
-export default function ClaimForm({ policies, onSubmit, today = new Date() }) {
-  const [values, setValues] = useState(EMPTY);
-  const [errors, setErrors] = useState({});
+interface Props {
+  policies: Policy[];
+  onSubmit: (values: ClaimInput) => Promise<void>;
+  today?: Date;
+}
+
+const EMPTY: FormValues = { policyNumber: "", type: "", incidentDate: "", amount: "", description: "" };
+const LABELS: Record<ClaimField, string> = { policyNumber: "Policy", type: "What is the claim for?", incidentDate: "Date of the expense", amount: "Amount (CAD)", description: "Description (optional)" };
+
+export default function ClaimForm({ policies, onSubmit, today = new Date() }: Props) {
+  const [values, setValues] = useState<FormValues>(EMPTY);
+  const [errors, setErrors] = useState<FieldErrors>({});
   const [sending, setSending] = useState(false);
-  const [serverError, setServerError] = useState(null);
-  const summaryRef = useRef(null);
+  const [serverError, setServerError] = useState<string | null>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
   const policy = policies.find((p) => p.number === values.policyNumber);
 
-  const set = (field) => (e) => {
+  const set = (field: ClaimField) => (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const v = e.target.value;
     setValues((cur) => ({ ...cur, [field]: v, ...(field === "policyNumber" ? { type: "" } : {}) }));
   };
 
-  const submit = async (e) => {
+  const submit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const found = validateClaim(values, policies, today);
     setErrors(found);
@@ -31,24 +40,24 @@ export default function ClaimForm({ policies, onSubmit, today = new Date() }) {
       await onSubmit(values);
       setValues(EMPTY);
     } catch (err) {
-      setServerError(err.message);
-      if (err.errors) setErrors(err.errors);
+      setServerError(err instanceof Error ? err.message : String(err));
+      if (err instanceof ApiError && err.errors) setErrors(err.errors);
     } finally {
       setSending(false);
     }
   };
 
-  const field = (name) => ({
+  const field = (name: ClaimField) => ({
     id: name,
     name,
     value: values[name],
     onChange: set(name),
-    "aria-invalid": errors[name] ? "true" : undefined,
+    "aria-invalid": errors[name] ? ("true" as const) : undefined,
     "aria-describedby": errors[name] ? `${name}-error` : undefined,
   });
-  const feedback = (name) => errors[name] && <div id={`${name}-error`} className="invalid-feedback d-block">{errors[name]}</div>;
-  const cls = (base, name) => `${base}${errors[name] ? " is-invalid" : ""}`;
-  const errorList = Object.entries(errors);
+  const feedback = (name: ClaimField) => errors[name] && <div id={`${name}-error`} className="invalid-feedback d-block">{errors[name]}</div>;
+  const cls = (base: string, name: ClaimField) => `${base}${errors[name] ? " is-invalid" : ""}`;
+  const errorList = Object.entries(errors) as [ClaimField, string][];
 
   return (
     <section aria-labelledby="form-heading">

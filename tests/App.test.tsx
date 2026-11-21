@@ -2,24 +2,24 @@ import { readFileSync } from "node:fs";
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe } from "jest-axe";
-import App from "../src/App.jsx";
+import App from "../src/App.tsx";
 
 const policiesXml = readFileSync(new URL("../server/data/policies.xml", import.meta.url), "utf8");
 const seed = JSON.parse(readFileSync(new URL("../server/data/claims.json", import.meta.url), "utf8"));
 
 function mockServer({ fail = false } = {}) {
-  const posted = [];
-  globalThis.fetch = jest.fn(async (url, init = {}) => {
+  const posted: Record<string, string>[] = [];
+  globalThis.fetch = jest.fn(async (url: string, init: RequestInit = {}) => {
     if (fail) return { ok: false, status: 503, json: async () => ({ message: "Service unavailable" }) };
     if (url === "/api/policies") return { ok: true, status: 200, text: async () => policiesXml };
     if (url === "/api/claims" && init.method === "POST") {
-      const body = JSON.parse(init.body);
+      const body = JSON.parse(String(init.body));
       posted.push(body);
       return { ok: true, status: 201, json: async () => ({ ...body, id: "CL-2026-0006", amount: Number(body.amount), status: "Submitted" }) };
     }
     if (url === "/api/claims") return { ok: true, status: 200, json: async () => seed };
     return { ok: false, status: 404, json: async () => ({}) };
-  });
+  }) as unknown as typeof fetch;
   return posted;
 }
 

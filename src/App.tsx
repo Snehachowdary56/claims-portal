@@ -1,17 +1,20 @@
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
-import { api, isDemo } from "./api.js";
-import ClaimsTable from "./components/ClaimsTable.jsx";
+import { api, isDemo } from "./api.ts";
+import ClaimsTable from "./components/ClaimsTable.tsx";
+import type { Claim, ClaimInput, Policy } from "./types.ts";
+
+type Tab = "claims" | "new";
 
 // The form is only downloaded when it is opened (Webpack code splitting keeps the first load small).
-const ClaimForm = lazy(() => import(/* webpackChunkName: "claim-form" */ "./components/ClaimForm.jsx"));
+const ClaimForm = lazy(() => import(/* webpackChunkName: "claim-form" */ "./components/ClaimForm.tsx"));
 
 export default function App() {
-  const [tab, setTab] = useState("claims");
-  const [policies, setPolicies] = useState([]);
-  const [claims, setClaims] = useState([]);
+  const [tab, setTab] = useState<Tab>("claims");
+  const [policies, setPolicies] = useState<Policy[]>([]);
+  const [claims, setClaims] = useState<Claim[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [notice, setNotice] = useState(null);
+  const [error, setError] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -21,7 +24,7 @@ export default function App() {
       setClaims(c);
       setError(null);
     } catch (e) {
-      setError(e.message);
+      setError(e instanceof Error ? e.message : String(e));
     } finally {
       setLoading(false);
     }
@@ -31,7 +34,7 @@ export default function App() {
     load();
   }, [load]);
 
-  const submit = async (values) => {
+  const submit = async (values: ClaimInput) => {
     const claim = await api.submit(values);
     setClaims((cur) => [claim, ...cur]);
     setNotice(`Claim ${claim.id} was submitted. We usually review claims within 5 business days.`);
@@ -49,7 +52,7 @@ export default function App() {
       </header>
       <main id="main" className="container pb-5">
         <ul className="nav nav-tabs mb-4">
-          {[["claims", "My claims"], ["new", "New claim"]].map(([key, label]) => (
+          {([["claims", "My claims"], ["new", "New claim"]] as const).map(([key, label]) => (
             <li className="nav-item" key={key}>
               <button className={`nav-link${tab === key ? " active" : ""}`} aria-current={tab === key ? "page" : undefined} onClick={() => setTab(key)}>
                 {label}

@@ -2,12 +2,14 @@ import js from "@eslint/js";
 import react from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
-export default [
-  { ignores: ["dist", "node_modules", "coverage"] },
+export default tseslint.config(
+  { ignores: ["dist", "dist-demo", "node_modules", "coverage", ".lighthouseci"] },
   js.configs.recommended,
+  ...tseslint.configs.recommended,
   {
-    files: ["**/*.{js,jsx}"],
+    files: ["**/*.{js,jsx,ts,tsx}"],
     plugins: { react, "react-hooks": reactHooks },
     languageOptions: {
       ecmaVersion: "latest",
@@ -23,4 +25,9 @@ export default [
       "react/prop-types": "off",
     },
   },
-];
+  {
+    // Jest's isolateModules needs require() to reload a module with new globals.
+    files: ["tests/**"],
+    rules: { "@typescript-eslint/no-require-imports": "off" },
+  },
+);

@@ -2,7 +2,7 @@ name: CI
 on: [push, pull_request]
 jobs:
   build-and-test:
-    name: Lint, test, build, browser test
+    name: Lint, type-check, test, build, browser test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,6 +12,8 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run lint
+      - name: Type-check (TypeScript, strict)
+        run: npm run typecheck
       - name: Unit, API and accessibility tests (Jest, React Testing Library, jest-axe)
         run: npm test
       - name: Production build (fails if the performance budget is exceeded)

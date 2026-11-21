@@ -4,20 +4,23 @@ import { readFileSync } from "node:fs";
 const xml = readFileSync(new URL("../server/data/policies.xml", import.meta.url), "utf8");
 const seed = JSON.parse(readFileSync(new URL("../server/data/claims.json", import.meta.url), "utf8"));
 
-function loadDemoApi() {
-  globalThis.__DEMO__ = true;
-  globalThis.__DEMO_POLICIES_XML__ = xml;
-  globalThis.__DEMO_CLAIMS__ = seed;
-  let mod;
+type ApiModule = typeof import("../src/api.ts");
+const g = globalThis as typeof globalThis & { __DEMO__?: boolean; __DEMO_POLICIES_XML__?: string; __DEMO_CLAIMS__?: unknown };
+
+function loadDemoApi(): ApiModule {
+  g.__DEMO__ = true;
+  g.__DEMO_POLICIES_XML__ = xml;
+  g.__DEMO_CLAIMS__ = seed;
+  let mod: ApiModule | undefined;
   jest.isolateModules(() => {
-    mod = require("../src/api.js");
+    mod = require("../src/api.ts");
   });
-  return mod;
+  return mod!;
 }
 
 beforeEach(() => localStorage.clear());
 afterAll(() => {
-  delete globalThis.__DEMO__;
+  delete g.__DEMO__;
 });
 
 test("works without a server", async () => {

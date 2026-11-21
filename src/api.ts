@@ -1,37 +1,38 @@
 // Client side of the client-server app: talks to the Express API.
-import { parsePoliciesXml } from "./xml.js";
-import { validateClaim } from "./validation.js";
+import { parsePoliciesXml } from "./xml.ts";
+import { validateClaim } from "./validation.ts";
+import { ApiError, type Claim, type ClaimInput, type ClaimsApi } from "./types.ts";
 
-async function check(res) {
+async function check(res: Response): Promise<Response> {
   if (!res.ok) {
     let message = `Request failed (${res.status})`;
+    let errors;
     try {
-      const body = await res.json();
+      const body = (await res.json()) as { message?: string; errors?: ApiError["errors"] };
       if (body.message) message = body.message;
+      errors = body.errors;
     } catch {
       /* not JSON */
     }
-    const err = new Error(message);
-    err.status = res.status;
-    throw err;
+    throw new ApiError(message, { status: res.status, errors });
   }
   return res;
 }
 
-const serverApi = {
+const serverApi: ClaimsApi = {
   async policies() {
     const res = await check(await fetch("/api/policies", { headers: { Accept: "application/xml" } }));
     return parsePoliciesXml(await res.text());
   },
   async claims() {
     const res = await check(await fetch("/api/claims"));
-    return res.json();
+    return (await res.json()) as Claim[];
   },
   async submit(claim) {
     const res = await check(
       await fetch("/api/claims", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(claim) }),
     );
-    return res.json();
+    return (await res.json()) as Claim;
   },
 };
 
@@ -39,12 +40,11 @@ const serverApi = {
 // claims are validated with the same rules and kept in this browser (localStorage).
 const DEMO_KEY = "harbour-demo-claims";
 
-function demoApi() {
-  /* global __DEMO_POLICIES_XML__, __DEMO_CLAIMS__ */
+function demoApi(): ClaimsApi {
   const policies = () => parsePoliciesXml(__DEMO_POLICIES_XML__);
-  const saved = () => {
+  const saved = (): Claim[] => {
     try {
-      return JSON.parse(localStorage.getItem(DEMO_KEY) ?? "[]");
+      return JSON.parse(localStorage.getItem(DEMO_KEY) ?? "[]") as Claim[];
     } catch {
       return [];
     }
@@ -56,15 +56,11 @@ function demoApi() {
     async claims() {
       return [...saved(), ...__DEMO_CLAIMS__].sort((a, b) => b.incidentDate.localeCompare(a.incidentDate));
     },
-    async submit(input) {
+    async submit(input: ClaimInput) {
       const errors = validateClaim(input, policies());
-      if (Object.keys(errors).length) {
-        const err = new Error("Please fix the highlighted fields.");
-        err.errors = errors;
-        throw err;
-      }
+      if (Object.keys(errors).length) throw new ApiError("Please fix the highlighted fields.", { status: 400, errors });
       const all = saved();
-      const claim = {
+      const claim: Claim = {
         id: `CL-2026-${String(__DEMO_CLAIMS__.length + all.length + 1).padStart(4, "0")}`,
         policyNumber: input.policyNumber,
         type: input.type,
@@ -83,6 +79,5 @@ function demoApi() {
   };
 }
 
-/* global __DEMO__ */
-export const isDemo = typeof __DEMO__ !== "undefined" && __DEMO__;
-export const api = isDemo ? demoApi() : serverApi;
+export const isDemo: boolean = typeof __DEMO__ !== "undefined" && Boolean(__DEMO__);
+export const api: ClaimsApi = isDemo ? demoApi() : serverApi;
